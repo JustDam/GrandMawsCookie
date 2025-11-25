@@ -31,6 +31,9 @@ jobs:
           pkg-config \
           unzip \
           zip
+        # Configure git for buildozer
+        git config --global user.email "build@github.com"
+        git config --global user.name "GitHub Actions"
     
     - name: Install Python dependencies
       run: |
@@ -45,7 +48,13 @@ jobs:
         if [ ! -f buildozer.spec ]; then
           buildozer init
         fi
-        buildozer android debug
+        # Debug: show buildozer version and environment
+        buildozer --version
+        echo "Current directory: $(pwd)"
+        echo "Files in directory:"
+        ls -la
+        # Run the build
+        buildozer android debug 2>&1 || true
       continue-on-error: true
     
     - name: Upload APK

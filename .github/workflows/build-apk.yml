@@ -1,0 +1,60 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          openjdk-11-jdk \
+          openjdk-11-jre \
+          git \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          unzip \
+          zip
+    
+    - name: Install Python dependencies
+      run: |
+        pip install --upgrade pip
+        pip install buildozer cython
+    
+    - name: Build APK
+      run: |
+        cd ${{ github.workspace }}
+        buildozer android debug
+      continue-on-error: true
+    
+    - name: Upload APK
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: apk-debug
+        path: bin/*.apk
+        if-no-files-found: ignore
+    
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: bin/*.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

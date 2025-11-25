@@ -36,10 +36,15 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install buildozer cython
+        pip install -r requirements.txt
     
     - name: Build APK
       run: |
         cd ${{ github.workspace }}
+        # Initialize buildozer if needed
+        if [ ! -f buildozer.spec ]; then
+          buildozer init
+        fi
         buildozer android debug
       continue-on-error: true
     

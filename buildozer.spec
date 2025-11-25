@@ -15,7 +15,7 @@ main.py = GrandMawsCookie_APK.py
 version = 1.0.0
 
 # App requirements
-requirements = python3,kivy,android
+requirements = python3,kivy
 
 # Permissions needed for Android
 android.permissions = INTERNET
@@ -31,9 +31,9 @@ android.gradle_dependencies =
 
 # Min/Max API levels for Android
 android.minapi = 21
-android.maxapi = 33
+android.maxapi = 31
 android.ndk = 25b
-android.sdk = 33
+android.sdk = 31
 
 # Orientation - portrait mode for recipe display
 orientation = portrait

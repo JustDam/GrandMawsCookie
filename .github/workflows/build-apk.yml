@@ -55,6 +55,12 @@ jobs:
         # Build APK with explicit error handling
         # Ignore git errors from p4a submodule handling
         buildozer -v android debug 2>&1 | grep -v "fatal: No url found for submodule" | tail -100 || true
+        
+        echo "=== Build complete, checking for APK files ==="
+        echo "Contents of bin/:"
+        ls -la bin/ 2>/dev/null || echo "bin/ directory not found"
+        echo "Contents of current directory:"
+        ls -la
       continue-on-error: true
     
     - name: Upload APK

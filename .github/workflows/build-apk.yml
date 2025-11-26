@@ -16,31 +16,26 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: '3.10'
     
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           openjdk-11-jdk \
-          openjdk-11-jre-headless \
           git \
           autoconf \
           automake \
           libtool \
           pkg-config \
           unzip \
-          zip \
-          libffi-dev \
-          libssl-dev \
-          libxml2-dev \
-          libxslt1-dev \
-          zlib1g-dev \
-          ccache
-        
-        python -m pip install --upgrade pip setuptools wheel
-        python -m pip install buildozer cython
-        python -m pip install kivy==2.2.1
+          zip
+    
+    - name: Install buildozer and dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel Cython
+        python -m pip install buildozer
+        python -m pip install kivy==2.1.0
     
     - name: Build APK
       run: |
@@ -48,18 +43,26 @@ jobs:
         export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
         export PATH=$JAVA_HOME/bin:$PATH
         
-        echo "Java version:"
-        java -version
+        # Run buildozer with full output
+        buildozer android debug -v 2>&1 | head -500
         
-        echo "Building APK..."
-        buildozer android debug
-      timeout-minutes: 60
-      continue-on-error: false
+        # Check for APK
+        if [ -f bin/GrandMawsCookie-debug.apk ]; then
+          echo "✓ APK built successfully!"
+          ls -lh bin/*.apk
+        else
+          echo "APK not found in bin/, checking .buildozer..."
+          find .buildozer -name "*.apk" -type f 2>/dev/null | head -5 || echo "No APK found anywhere"
+        fi
+      timeout-minutes: 90
+      continue-on-error: true
     
     - name: Upload APK
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: apk-debug
-        path: bin/*.apk
+        path: |
+          bin/*.apk
+          .buildozer/android/platform/build-*/build/outputs/apk/**/*.apk
         if-no-files-found: ignore

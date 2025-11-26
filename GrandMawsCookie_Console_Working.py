@@ -1,26 +1,27 @@
 """
-Recipe Quantity Adjuster
+Grand Maw's Cookie Recipe Adjuster
 Scales ingredient amounts based on desired servings
-Original recipe serves 12 people
+Original recipe makes 48 cookies
 """
 
 # ============================================================================
 # CONSTANTS
 # ============================================================================
-ORIGINAL_SERVINGS = 12
+ORIGINAL_SERVINGS = 48
 MIN_SERVINGS = 1
-MAX_SERVINGS = 100
+MAX_SERVINGS = 500
 
-# Original recipe ingredients (for 12 servings)
+# Original recipe ingredients (makes 48 cookies)
 ORIGINAL_RECIPE = {
-    "flour": {"amount": 3, "unit": "cups"},
-    "sugar": {"amount": 2, "unit": "cups"},
     "butter": {"amount": 1, "unit": "cup"},
-    "eggs": {"amount": 4, "unit": "large"},
-    "milk": {"amount": 1.5, "unit": "cups"},
-    "baking_powder": {"amount": 2, "unit": "teaspoons"},
-    "vanilla_extract": {"amount": 1, "unit": "teaspoon"},
-    "salt": {"amount": 0.5, "unit": "teaspoon"}
+    "brown_sugar": {"amount": 1, "unit": "cup"},
+    "granulated_sugar": {"amount": 0.75, "unit": "cup"},
+    "eggs": {"amount": 2, "unit": "large"},
+    "vanilla_extract": {"amount": 1.5, "unit": "teaspoons"},
+    "all_purpose_flour": {"amount": 2.25, "unit": "cups"},
+    "baking_soda": {"amount": 1, "unit": "teaspoon"},
+    "sea_salt": {"amount": 0.5, "unit": "teaspoon"},
+    "chocolate_chips": {"amount": 2, "unit": "cups"}
 }
 
 
@@ -288,7 +289,7 @@ def recipe_adjuster():
     print("\n" + "="*70)
     print("🍰  RECIPE QUANTITY ADJUSTER")
     print("="*70)
-    print(f"Original recipe serves: {ORIGINAL_SERVINGS} people")
+    print(f"Original recipe makes: {ORIGINAL_SERVINGS} cookies")
     print("="*70)
     
     try:

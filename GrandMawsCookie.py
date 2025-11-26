@@ -1,27 +1,28 @@
 
 """
-Recipe Quantity Adjuster
+Grand Maw's Cookie Recipe Adjuster
 Scales ingredient amounts based on desired servings
-Original recipe serves 12 people
+Original recipe makes 48 cookies
 """
 
 # ============================================================================
 # CONSTANTS
 # ============================================================================
-ORIGINAL_SERVINGS = 12
+ORIGINAL_SERVINGS = 48
 MIN_SERVINGS = 1
-MAX_SERVINGS = 100
+MAX_SERVINGS = 500
 
-# Original recipe ingredients (for 12 servings)
+# Original recipe ingredients (makes 48 cookies)
 ORIGINAL_RECIPE = {
-    "flour": {"amount": 3, "unit": "cups"},
-    "sugar": {"amount": 2, "unit": "cups"},
     "butter": {"amount": 1, "unit": "cup"},
-    "eggs": {"amount": 4, "unit": "large"},
-    "milk": {"amount": 1.5, "unit": "cups"},
-    "baking_powder": {"amount": 2, "unit": "teaspoons"},
-    "vanilla_extract": {"amount": 1, "unit": "teaspoon"},
-    "salt": {"amount": 0.5, "unit": "teaspoon"}
+    "brown_sugar": {"amount": 1, "unit": "cup"},
+    "granulated_sugar": {"amount": 0.75, "unit": "cup"},
+    "eggs": {"amount": 2, "unit": "large"},
+    "vanilla_extract": {"amount": 1.5, "unit": "teaspoons"},
+    "all_purpose_flour": {"amount": 2.25, "unit": "cups"},
+    "baking_soda": {"amount": 1, "unit": "teaspoon"},
+    "sea_salt": {"amount": 0.5, "unit": "teaspoon"},
+    "chocolate_chips": {"amount": 2, "unit": "cups"}
 }
 
 
@@ -52,21 +53,43 @@ def format_amount(amount: float) -> str:
     if amount == int(amount):
         return str(int(amount))
     
-    # Common fraction mappings (strict matching to avoid 0.33 != 1/3)
+    # Common fraction mappings (comprehensive set)
     fractions = {
+        0.0625: "1/16",
+        0.1111: "1/9",
+        0.125: "1/8",
+        0.1667: "1/6",
+        0.2: "1/5",
         0.25: "1/4",
+        0.3333: "1/3",
+        0.375: "3/8",
+        0.4: "2/5",
         0.5: "1/2",
-        0.75: "3/4"
+        0.6: "3/5",
+        0.6667: "2/3",
+        0.75: "3/4",
+        0.8: "4/5",
+        0.875: "7/8",
+        0.9375: "15/16"
     }
     
     # Check for whole number + fraction
     whole = int(amount)
-    decimal = round(amount - whole, 2)
+    decimal = amount - whole
     
-    if whole > 0 and decimal in fractions:
-        return f"{whole} {fractions[decimal]}"
-    elif decimal in fractions:
-        return fractions[decimal]
+    # Find closest fraction match (within 3% tolerance)
+    best_match = None
+    best_diff = 0.03
+    for frac_value, frac_label in fractions.items():
+        diff = abs(frac_value - decimal)
+        if diff < best_diff:
+            best_diff = diff
+            best_match = frac_label
+    
+    if whole > 0 and best_match:
+        return f"{whole} {best_match}"
+    elif best_match:
+        return best_match
     
     # Round to 2 decimal places for other values
     return f"{amount:.2f}".rstrip('0').rstrip('.')
@@ -289,7 +312,7 @@ def recipe_adjuster():
     print("\n" + "="*70)
     print("🍰  RECIPE QUANTITY ADJUSTER")
     print("="*70)
-    print(f"Original recipe serves: {ORIGINAL_SERVINGS} people")
+    print(f"Original recipe makes: {ORIGINAL_SERVINGS} cookies")
     print("="*70)
     
     try:

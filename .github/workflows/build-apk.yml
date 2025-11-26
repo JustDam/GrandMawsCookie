@@ -43,17 +43,21 @@ jobs:
         export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
         export PATH=$JAVA_HOME/bin:$PATH
         
+        # Configure git to avoid buildozer issues
+        git config --global user.email "build@example.com"
+        git config --global user.name "Builder"
+        git config --global safe.directory '*'
+        
+        # Initialize .buildozer cache to avoid git issues
+        mkdir -p .buildozer/android/platform/python-for-android
+        
         # Run buildozer with full output
-        buildozer android debug -v 2>&1 | head -500
+        buildozer android debug -v 2>&1 | tail -200
         
         # Check for APK
-        if [ -f bin/GrandMawsCookie-debug.apk ]; then
-          echo "✓ APK built successfully!"
-          ls -lh bin/*.apk
-        else
-          echo "APK not found in bin/, checking .buildozer..."
-          find .buildozer -name "*.apk" -type f 2>/dev/null | head -5 || echo "No APK found anywhere"
-        fi
+        echo "=== Checking for APK files ==="
+        find . -name "*.apk" -type f 2>/dev/null | head -10 || echo "No APK found"
+        ls -lah bin/ 2>/dev/null || echo "No bin directory"
       timeout-minutes: 90
       continue-on-error: true
     

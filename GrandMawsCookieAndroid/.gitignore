@@ -1,0 +1,32 @@
+# Android
+.gradle/
+.idea/
+build/
+*.apk
+*.ap_
+*.zip
+*.dex
+*.class
+*.jar
+bin/
+gen/
+local.properties
+.DS_Store
+
+# Gradle
+gradle-app.setting
+!gradle/wrapper/gradle-wrapper.jar
+.gradle
+
+# IDE
+.classpath
+.project
+.settings/
+*.iml
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Output
+out/
